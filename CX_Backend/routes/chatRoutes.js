@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Message = require("../models/Message");
+const Message = require("../models/message");
 const mongoose = require("mongoose");
 const User = require("../models/userModel");
 const { verifyUser } = require("../controllers/userController");
