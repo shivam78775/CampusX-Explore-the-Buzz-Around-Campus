@@ -19,7 +19,7 @@ function CommentSection({ post, isOpen, onClose }) {
     setIsSubmitting(true);
     try {
       const res = await axios.post(
-        `http://localhost:4444/api/v1/post/comment/${post._id}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/post/comment/${post._id}`,
         { text: newComment.trim() },
         { withCredentials: true }
       );

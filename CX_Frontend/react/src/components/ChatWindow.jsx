@@ -14,7 +14,7 @@ const ChatWindow = ({ selectedUser, currentUser, onMessageSent, onBack }) => {
   const endRef = useRef(null);
 
   useEffect(() => {
-    const socketInstance = io("http://localhost:4444", {
+    const socketInstance = io(`${import.meta.env.VITE_BACKEND_URL}`, {
       withCredentials: true,
     });
     setSocket(socketInstance);
@@ -58,7 +58,7 @@ const ChatWindow = ({ selectedUser, currentUser, onMessageSent, onBack }) => {
 
   const markMessagesAsRead = async (senderId, receiverId) => {
     try {
-      await fetch(`http://localhost:4444/api/v1/chat/mark-read/${senderId}/${receiverId}`, {
+      await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/v1/chat/mark-read/${senderId}/${receiverId}`, {
         method: 'PUT',
         credentials: 'include'
       });

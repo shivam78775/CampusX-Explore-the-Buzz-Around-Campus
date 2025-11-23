@@ -10,6 +10,8 @@ function NotificationBox() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [socket, setSocket] = useState(null);
 
+  const BASE_URL = import.meta.env.VITE_BACKEND_URL;
+
   useEffect(() => {
     if (user) {
       fetchNotifications();
@@ -19,15 +21,15 @@ function NotificationBox() {
     }
   }, [user]);
 
-  // Socket connection for real-time notifications
+  // Socket (use env)
   useEffect(() => {
     if (user) {
-      const socketInstance = io("http://localhost:4444", {
+      const socketInstance = io(BASE_URL, {
         withCredentials: true,
       });
+
       setSocket(socketInstance);
 
-      // Listen for new notifications
       socketInstance.on("new_notification", (notification) => {
         setNotifications(prev => [notification, ...prev]);
         setUnreadCount(prev => prev + 1);
@@ -37,11 +39,11 @@ function NotificationBox() {
         socketInstance.disconnect();
       };
     }
-  }, [user]);
+  }, [user, BASE_URL]);
 
   const fetchNotifications = async () => {
     try {
-      const response = await axios.get('http://localhost:4444/api/v1/notifications', {
+      const response = await axios.get(`${BASE_URL}/api/v1/notifications`, {
         withCredentials: true
       });
       setNotifications(response.data);
@@ -54,7 +56,7 @@ function NotificationBox() {
 
   const fetchUnreadCount = async () => {
     try {
-      const response = await axios.get('http://localhost:4444/api/v1/notifications/unread-count', {
+      const response = await axios.get(`${BASE_URL}/api/v1/notifications/unread-count`, {
         withCredentials: true
       });
       setUnreadCount(response.data.unreadCount);
@@ -65,7 +67,7 @@ function NotificationBox() {
 
   const markAllAsRead = async () => {
     try {
-      await axios.put('http://localhost:4444/api/v1/notifications/mark-read', {}, {
+      await axios.put(`${BASE_URL}/api/v1/notifications/mark-read`, {}, {
         withCredentials: true
       });
       setUnreadCount(0);
@@ -80,11 +82,11 @@ function NotificationBox() {
       case 'like':
         return `${notification.sender.username} liked your post`;
       case 'comment':
-        return `${notification.sender.username} commented on your post: "${notification.content}"`;
+        return `${notification.sender.username} commented: "${notification.content}"`;
       case 'follow':
         return `${notification.sender.username} started following you`;
       case 'message':
-        return `${notification.sender.username} sent you a message: "${notification.content}"`;
+        return `${notification.sender.username} sent a message: "${notification.content}"`;
       case 'reminder':
         return `Reminder: ${notification.content}`;
       default:
@@ -94,18 +96,12 @@ function NotificationBox() {
 
   const getNotificationIcon = (type) => {
     switch (type) {
-      case 'like':
-        return '❤️';
-      case 'comment':
-        return '💬';
-      case 'follow':
-        return '👥';
-      case 'message':
-        return '💌';
-      case 'reminder':
-        return '⏰';
-      default:
-        return '🔔';
+      case 'like': return '❤️';
+      case 'comment': return '💬';
+      case 'follow': return '👥';
+      case 'message': return '💌';
+      case 'reminder': return '⏰';
+      default: return '🔔';
     }
   };
 
@@ -162,7 +158,9 @@ function NotificationBox() {
                       {new Date(notification.createdAt).toLocaleString()}
                     </p>
                   </div>
-                  <p className="mt-1 text-gray-800">{getNotificationMessage(notification)}</p>
+                  <p className="mt-1 text-gray-800">
+                    {getNotificationMessage(notification)}
+                  </p>
                 </div>
                 {!notification.isRead && (
                   <div className="w-2 h-2 bg-lime-400 rounded-full"></div>

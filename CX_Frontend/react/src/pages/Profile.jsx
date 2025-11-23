@@ -4,7 +4,7 @@ import axios from "axios";
 import { Card } from "../components/Card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../components/Tabs";
 import { Avatar } from "../components/Avatar";
-import { Grid3X3, Video, FileText } from "lucide-react"; 
+import { Grid3X3, Video, FileText } from "lucide-react";
 import Footer from "../components/Footer";
 
 export default function ProfilePage() {
@@ -23,11 +23,13 @@ export default function ProfilePage() {
       try {
         axios.defaults.withCredentials = true;
         const res = await axios.get(
-          `http://localhost:4444/api/v1/user/profile/${username}`
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/profile/${username}`
         );
         setUser(res.data.user);
         // Filter out anonymous posts from user profile
-        const nonAnonymousPosts = res.data.posts.filter(post => !post.isAnonymous);
+        const nonAnonymousPosts = res.data.posts.filter(
+          (post) => !post.isAnonymous
+        );
         setPosts(nonAnonymousPosts);
         setIsFollowing(res.data.isFollowing);
         setLoggedInUserId(res.data.loggedInUserId);
@@ -45,8 +47,8 @@ export default function ProfilePage() {
   const handleFollowToggle = async () => {
     try {
       const res = await axios.post(
-        `http://localhost:4444/api/v1/user/follow/${user._id}`,
-        {}, 
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/follow/${user._id}`,
+        {},
         { withCredentials: true }
       );
 
@@ -88,12 +90,12 @@ export default function ProfilePage() {
               className="w-full h-32 object-cover rounded-t-2xl"
             />
             <span className="w-24 h-24 overflow-hidden">
-            <img
-              src={user.profilepic || "/default.png"}
-              alt="Avatar"
-              className="w-24  rounded-full object-cover border-4 border-white absolute left-4 -bottom-12"
+              <img
+                src={user.profilepic || "/default.png"}
+                alt="Avatar"
+                className="w-24  rounded-full object-cover border-4 border-white absolute left-4 -bottom-12"
               />
-              </span>
+            </span>
           </div>
 
           <div className="mt-16 px-4 text-left">
@@ -101,7 +103,10 @@ export default function ProfilePage() {
               <div>
                 <h2 className="text-xl font-bold">{user.name}</h2>
                 <p className="text-sm text-gray-500">@{user.username}</p>
-                <p className="text-sm mt-1 text-gray-600"> {user.bio || "🎓 CampusX Student" }</p>
+                <p className="text-sm mt-1 text-gray-600">
+                  {" "}
+                  {user.bio || "🎓 CampusX Student"}
+                </p>
               </div>
 
               {user._id !== loggedInUserId && (

@@ -35,7 +35,7 @@ function PostFooter({ post, currentUserId }) {
   const handleLike = async () => {
     try {
       const res = await axios.post(
-        `http://localhost:4444/api/v1/post/like-unlike/${post._id}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/post/like-unlike/${post._id}`,
         {},
         { withCredentials: true }
       );

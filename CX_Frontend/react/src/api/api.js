@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:4444/api/v1/chat";
+const API_URL = `${import.meta.env.VITE_BACKEND_URL}/api/v1/chat`;
 
 // Fetch messages between two users
 export const fetchMessages = async (senderId, receiverId) => {
@@ -32,7 +32,10 @@ export const sendMessage = async (sender, receiver, content) => {
 // Fetch chat history with users
 export const fetchChatHistory = async (userId) => {
   try {
-    const { data } = await axios.get(`${API_URL}/history/${userId}`, { withCredentials: true });
+    const { data } = await axios.get(
+      `${API_URL}/history/${userId}`,
+      { withCredentials: true }
+    );
     return data;
   } catch (error) {
     console.error("Fetch chat history error:", error);

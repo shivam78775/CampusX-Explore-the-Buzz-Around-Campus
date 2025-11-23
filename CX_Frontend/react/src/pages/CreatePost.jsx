@@ -33,15 +33,15 @@ export default function CreatePostPage() {
 
     try {
       const res = await axios.post(
-        "http://localhost:4444/api/v1/post/create",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-          withCredentials: true,
-        }
-      );
+  `${import.meta.env.VITE_BACKEND_URL}/api/v1/post/create`,
+  formData,
+  {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+    withCredentials: true,
+  }
+);
 
       console.log("Post created:", res.data);
       navigate("/home");

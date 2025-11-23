@@ -21,7 +21,7 @@ const SearchUsers = () => {
     setLoading(true);
     try {
       const res = await axios.get(
-        `http://localhost:4444/api/v1/user/search?username=${query}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/search?username=${query}`,
         {
           withCredentials: true,
         }
@@ -43,10 +43,10 @@ const SearchUsers = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await axios.get("http://localhost:4444/api/v1/post/all", {
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/post/all`, {
           withCredentials: true,
         });
-        
+
         // Add randomization to posts
         let shuffledPosts = res.data.sort(() => Math.random() - 0.5);
         setPosts(shuffledPosts);

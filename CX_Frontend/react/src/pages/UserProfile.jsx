@@ -28,12 +28,12 @@ export default function UserProfile() {
         axios.defaults.withCredentials = true;
 
         const { data } = await axios.get(
-          "http://localhost:4444/api/v1/user/me"
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/me`
         );
         setUser(data);
 
         const res = await axios.get(
-          `http://localhost:4444/api/v1/post/user/${data._id}`
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/post/user/${data._id}`
         );
         const allPosts = res.data || [];
         
@@ -61,7 +61,7 @@ export default function UserProfile() {
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:4444/api/v1/user/logout", {}, {
+      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/user/logout`, {}, {
         withCredentials: true, 
       });
   

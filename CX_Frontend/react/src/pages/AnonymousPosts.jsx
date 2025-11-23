@@ -22,13 +22,13 @@ export default function AnonymousPosts() {
   const fetchAnonymousPosts = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:4444/api/v1/post/anonymous",
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/post/anonymous`,
         { withCredentials: true }
       );
-      
-      // Add additional frontend randomization for more variety
+
+      // Randomize posts for variety
       let shuffledPosts = res.data.sort(() => Math.random() - 0.5);
-      
+
       setPosts(shuffledPosts);
     } catch (err) {
       console.error("Error fetching anonymous posts:", err);
@@ -50,6 +50,7 @@ export default function AnonymousPosts() {
   return (
     <div className="min-h-screen w-screen bg-white px-4 pt-8 pb-20 overflow-x-hidden animate-fadeIn">
       <div className="w-full max-w-md min-w-[350px] mx-auto">
+        
         {/* Header */}
         <div className="flex items-center justify-between mb-6 animate-slideIn">
           <span
@@ -108,6 +109,7 @@ export default function AnonymousPosts() {
         <div className="animate-slideIn" style={{ animationDelay: '0.2s' }}>
           <Footer />
         </div>
+
       </div>
     </div>
   );

@@ -18,7 +18,7 @@ export default function UpdateProfile() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const res = await axios.get("http://localhost:4444/api/v1/user/me", {
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/user/me`, {
           withCredentials: true,
         });
         const { name, bio, profilepic, coverpic } = res.data;
@@ -62,7 +62,7 @@ export default function UpdateProfile() {
       if (coverpic) formData.append("coverpic", coverpic);
 
       await axios.put(
-        "http://localhost:4444/api/v1/user/update-profile",
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/update-profile`,
         formData,
         {
           withCredentials: true,

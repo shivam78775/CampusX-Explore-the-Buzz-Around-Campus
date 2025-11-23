@@ -7,6 +7,8 @@ import { fetchChatHistory } from "../api/api";
 import LoadingSpinner from "../components/LoadingSpinner";
 import LoadingSkeleton from "../components/LoadingSkeleton";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL; // ✅ Base URL
+
 function ChatPage() {
   const [query, setQuery] = useState("");
   const [users, setUsers] = useState([]);
@@ -15,15 +17,16 @@ function ChatPage() {
   const [loading, setLoading] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
-  const [activeTab, setActiveTab] = useState("history"); // "history" or "search"
+  const [activeTab, setActiveTab] = useState("history");
 
   // Fetch current user
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
-        const res = await axios.get("http://localhost:4444/api/v1/user/me", {
-          withCredentials: true,
-        });
+        const res = await axios.get(
+          `${BACKEND_URL}/api/v1/user/me`,
+          { withCredentials: true }
+        );
         setCurrentUser(res.data);
       } catch (error) {
         console.error("Failed to fetch current user:", error);
@@ -61,7 +64,7 @@ function ChatPage() {
     setLoading(true);
     try {
       const res = await axios.get(
-        `http://localhost:4444/api/v1/user/search?username=${query}`,
+        `${BACKEND_URL}/api/v1/user/search?username=${query}`,
         { withCredentials: true }
       );
       setFilteredUsers(res.data);
@@ -92,7 +95,7 @@ function ChatPage() {
     );
   }
 
-  // Mobile-first: full-screen list/search OR full-screen chat
+  // Mobile-first UI
   const renderListView = () => (
     <div className="flex flex-col h-screen w-full bg-gray-100 p-4 text-black animate-fadeIn">
       <h2 className="text-xl font-bold mb-4 animate-slideIn">Chat</h2>
@@ -140,16 +143,14 @@ function ChatPage() {
               onSelectUser={setSelectedUser}
             />
           </div>
+        ) : loading ? (
+          <div className="flex items-center justify-center h-32 animate-fadeIn">
+            <LoadingSpinner size="md" color="blue" text="Searching..." />
+          </div>
         ) : (
-          loading ? (
-            <div className="flex items-center justify-center h-32 animate-fadeIn">
-              <LoadingSpinner size="md" color="blue" text="Searching..." />
-            </div>
-          ) : (
-            <div className="animate-fadeIn" style={{ animationDelay: '0.3s' }}>
-              <UserList users={filteredUsers} onSelectUser={setSelectedUser} />
-            </div>
-          )
+          <div className="animate-fadeIn" style={{ animationDelay: '0.3s' }}>
+            <UserList users={filteredUsers} onSelectUser={setSelectedUser} />
+          </div>
         )}
       </div>
     </div>

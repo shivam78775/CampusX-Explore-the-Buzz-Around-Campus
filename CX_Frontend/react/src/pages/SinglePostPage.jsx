@@ -16,7 +16,7 @@ export default function SinglePostPage({ currentUserId }) {
     const fetchPost = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:4444/api/v1/post/${postId}`,
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/post/${postId}`,
           {
             withCredentials: true,
           }

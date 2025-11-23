@@ -41,7 +41,7 @@ function SharePopup({ post, isOpen, onClose }) {
     setIsLoading(true);
     try {
       const res = await axios.get(
-        "http://localhost:4444/api/v1/chat/history",
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/chat/history`,
         { withCredentials: true }
       );
       console.log("Chat history response:", res.data);
@@ -57,7 +57,7 @@ function SharePopup({ post, isOpen, onClose }) {
     setIsSearching(true);
     try {
       const res = await axios.get(
-        `http://localhost:4444/api/v1/user/search?username=${searchQuery}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/search?username=${searchQuery}`,
         { withCredentials: true }
       );
       setSearchResults(res.data || []);
@@ -90,7 +90,7 @@ function SharePopup({ post, isOpen, onClose }) {
       // Send to each selected user
       const promises = selectedUsers.map(userId => 
         axios.post(
-          "http://localhost:4444/api/v1/chat/send",
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/chat/send`,
           {
             receiverId: userId,
             message: shareMessage,
