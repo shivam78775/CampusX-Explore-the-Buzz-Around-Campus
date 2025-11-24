@@ -26,7 +26,7 @@ app.set("server", server);
 
 // 🌐 Middlewares
 app.use(cors({
-  origin: process.env.CLIENT_URL || "http://localhost:5173", // Make sure to replace with your frontend URL
+  origin: process.env.BASE_URL || "https://campusx-plum.vercel.app", // Make sure to replace with your frontend URL
   credentials: true,
 }));
 app.use(cookieParser());
