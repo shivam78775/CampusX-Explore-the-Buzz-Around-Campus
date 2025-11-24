@@ -1,44 +1,36 @@
+const Brevo = require("@getbrevo/brevo");
 const jwt = require("jsonwebtoken");
-const nodemailer = require("nodemailer");
 require("dotenv").config();
 
-// =============================================
-// Create Brevo SMTP Transporter (WORKS WITH RENDER)
-// =============================================
-const createEmailTransporter = () => {
-    return nodemailer.createTransport({
-        host: "smtp-relay.brevo.com",
-        port: 587,
-        secure: false, // Important for Brevo
-        auth: {
-            user: process.env.BREVO_SMTP_LOGIN,  // login (email-like)
-            pass: process.env.BREVO_SMTP_KEY,    // SMTP key (password)
-        },
-    });
-};
+// ================================
+// Configure Brevo API (NEW SDK)
+// ================================
+const client = Brevo.ApiClient.instance;
+const apiKey = client.authentications["api-key"];
+apiKey.apiKey = process.env.BREVO_API_KEY;
 
-// =============================================
+const brevo = new Brevo.TransactionalEmailsApi();
+
+// ================================
 // Send Verification Email
-// =============================================
+// ================================
 const sendVerificationEmail = async (email, name) => {
-    const transporter = createEmailTransporter();
-
     const token = verificationToken(email);
     const verificationLink = `${process.env.BASE_URL}/verify-email?token=${token}`;
 
-    const mailOptions = {
-        from: `"CampusX" <no-reply@campusx.com>`,
-        to: email,
+    const emailData = {
+        sender: { name: "CampusX", email: "no-reply@campusx.com" },
+        to: [{ email }],
         subject: "Verify Your Email | CampusX",
-        html: `
+        htmlContent: `
             <div style="font-family: Arial; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; background: #fafafa;">
-                <h2 style="text-align: center; color: #111;">Verify Your Email Address</h2>
+                <h2 style="text-align: center;">Verify Your Email Address</h2>
                 <p>Hello <strong>${name}</strong>,</p>
-                <p>Click the button below to verify your email.</p>
+                <p>Click the button below to verify your email:</p>
 
                 <div style="text-align: center; margin-top: 30px;">
-                    <a href="${verificationLink}" 
-                        style="padding: 12px 20px; background: black; color: white; text-decoration: none; border-radius: 5px; font-size: 16px;">
+                    <a href="${verificationLink}"
+                       style="padding: 12px 20px; background: black; color: white; border-radius: 5px; text-decoration: none;">
                         Verify Email
                     </a>
                 </div>
@@ -50,16 +42,16 @@ const sendVerificationEmail = async (email, name) => {
     };
 
     try {
-        await transporter.sendMail(mailOptions);
-        console.log(`✅ Email sent to ${email}`);
+        await brevo.sendTransacEmail(emailData);
+        console.log(`✅ Verification email sent to ${email}`);
     } catch (error) {
-        console.error("❌ Email sending failed:", error);
+        console.error("❌ Email API failed:", error.response?.body || error);
     }
 };
 
-// =============================================
-// Token Generator
-// =============================================
+// ================================
+// Generate Token
+// ================================
 const verificationToken = (userEmail) => {
     return jwt.sign({ email: userEmail }, process.env.JWT_SECRET, {
         expiresIn: "1h",
