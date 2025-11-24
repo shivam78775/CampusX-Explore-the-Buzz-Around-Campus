@@ -6,14 +6,13 @@ require("dotenv").config();
 // Create a Mailtrap SMTP transporter (BEST OPTION)
 // =============================================
 const createEmailTransporter = () => {
-    return nodemailer.createTransport({
-        host: "sandbox.smtp.mailtrap.io",
-        port: 2525, 
-        auth: {
-            user: process.env.MAILTRAP_USER,
-            pass: process.env.MAILTRAP_PASS,
-        },
-    });
+  return nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_APP_PASS,
+    },
+  });
 };
 
 // =============================================
