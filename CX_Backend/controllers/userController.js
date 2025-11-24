@@ -108,10 +108,12 @@ async function login(req, res) {
     // Set token in HTTP-only cookie
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // true in production
-      sameSite: "Strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      secure: true,         // Required for HTTPS
+      sameSite: "None",     // Required for cross-site
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
+
 
     // Send response
     res.status(200).json({
@@ -131,9 +133,9 @@ async function login(req, res) {
 function logOut(req, res) {
   res.clearCookie("token", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    expires: new Date(0),
+    secure: true,
+    sameSite: "None",
+    path: "/",
   });
   res.status(200).send({ message: "Logged out successfully" });
 };
@@ -279,7 +281,7 @@ async function getUserProfile(req, res) {
 
     // Filter out anonymous posts for display
     const nonAnonymousPosts = posts.filter(post => !post.isAnonymous);
-    
+
     const formattedPosts = nonAnonymousPosts.map(post => ({
       _id: post._id,
       caption: post.content,
@@ -406,7 +408,7 @@ async function toggleFollow(req, res) {
       // Create notification for follow
       const Notification = require("../models/notification");
       const io = req.app.get("io");
-      
+
       const notification = await Notification.create({
         sender: currentUserId,
         receiver: targetUserId,

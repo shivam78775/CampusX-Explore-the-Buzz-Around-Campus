@@ -17,6 +17,7 @@ const setupSocket = require('./socket');  // Add socket setup function
 dotenv.config();
 
 const app = express();
+app.set("trust proxy", 1);
 const PORT = process.env.PORT || 4444;
 const server = http.createServer(app);
 
