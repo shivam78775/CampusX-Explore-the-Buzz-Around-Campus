@@ -7,7 +7,7 @@ require("dotenv").config();
 // =============================================
 const createEmailTransporter = () => {
     return nodemailer.createTransport({
-        host: "smtp.mailtrap.io",
+        host: "sandbox.smtp.mailtrap.io", 
         port: 587,
         auth: {
             user: process.env.MAILTRAP_USER,
@@ -24,7 +24,7 @@ const sendVerificationEmail = async (email, name) => {
 
     const token = verificationToken(email);
 
-    const verificationLink = `${process.env.BASE_URL}/verify-email?token=${token}`;
+    const verificationLink = `${process.env.BACK_URL}/verify-email?token=${token}`;
 
     const mailOptions = {
         from: "CampusX <no-reply@campusx.com>",
