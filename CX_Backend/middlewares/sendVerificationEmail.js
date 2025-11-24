@@ -3,16 +3,18 @@ const nodemailer = require("nodemailer");
 require("dotenv").config();
 
 // =============================================
-// Create a Mailtrap SMTP transporter (BEST OPTION)
+// Create Brevo SMTP Transporter (WORKS WITH RENDER)
 // =============================================
 const createEmailTransporter = () => {
-  return nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_APP_PASS,
-    },
-  });
+    return nodemailer.createTransport({
+        host: "smtp-relay.brevo.com",
+        port: 587,
+        secure: false, // Important for Brevo
+        auth: {
+            user: process.env.BREVO_SMTP_LOGIN,  // login (email-like)
+            pass: process.env.BREVO_SMTP_KEY,    // SMTP key (password)
+        },
+    });
 };
 
 // =============================================
@@ -22,22 +24,21 @@ const sendVerificationEmail = async (email, name) => {
     const transporter = createEmailTransporter();
 
     const token = verificationToken(email);
-
-    const verificationLink = `${process.env.BACK_URL}/verify-email?token=${token}`;
+    const verificationLink = `${process.env.BASE_URL}/verify-email?token=${token}`;
 
     const mailOptions = {
-        from: "CampusX <no-reply@campusx.com>",
+        from: `"CampusX" <no-reply@campusx.com>`,
         to: email,
         subject: "Verify Your Email | CampusX",
         html: `
             <div style="font-family: Arial; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; background: #fafafa;">
                 <h2 style="text-align: center; color: #111;">Verify Your Email Address</h2>
                 <p>Hello <strong>${name}</strong>,</p>
-                <p>Thanks for signing up on <strong>CampusX</strong>. Click the button below to verify your email.</p>
+                <p>Click the button below to verify your email.</p>
 
                 <div style="text-align: center; margin-top: 30px;">
                     <a href="${verificationLink}" 
-                    style="padding: 12px 20px; background: black; color: white; text-decoration: none; border-radius: 5px; font-size: 16px;">
+                        style="padding: 12px 20px; background: black; color: white; text-decoration: none; border-radius: 5px; font-size: 16px;">
                         Verify Email
                     </a>
                 </div>
@@ -50,14 +51,14 @@ const sendVerificationEmail = async (email, name) => {
 
     try {
         await transporter.sendMail(mailOptions);
-        console.log(`✅ Verification email sent to ${email}`);
+        console.log(`✅ Email sent to ${email}`);
     } catch (error) {
-        console.error(`❌ Email sending failed:`, error);
+        console.error("❌ Email sending failed:", error);
     }
 };
 
 // =============================================
-// Generate Email Verification Token
+// Token Generator
 // =============================================
 const verificationToken = (userEmail) => {
     return jwt.sign({ email: userEmail }, process.env.JWT_SECRET, {
