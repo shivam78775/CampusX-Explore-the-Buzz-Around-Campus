@@ -5,10 +5,8 @@ require("dotenv").config();
 // ================================
 // Configure Brevo API
 // ================================
-let defaultClient = Brevo.ApiClient.instance;
-
-// API Key Authentication
-let apiKey = defaultClient.authentications["api-key"];
+const client = Brevo.ApiClient.instance;
+const apiKey = client.authentications["api-key"];
 apiKey.apiKey = process.env.BREVO_API_KEY;
 
 const brevo = new Brevo.TransactionalEmailsApi();
@@ -21,7 +19,10 @@ const sendVerificationEmail = async (email, name) => {
     const verificationLink = `${process.env.BASE_URL}/verify-email?token=${token}`;
 
     const emailData = {
-        sender: { name: "CampusX", email: "no-reply@campusx.com" },
+        sender: { 
+            name: process.env.SENDER_NAME, 
+            email: process.env.SENDER_EMAIL   // MUST BE VERIFIED IN BREVO
+        },
         to: [{ email }],
         subject: "Verify Your Email | CampusX",
         htmlContent: `
@@ -29,7 +30,9 @@ const sendVerificationEmail = async (email, name) => {
                 <h2>Verify Your Email Address</h2>
                 <p>Hello <strong>${name}</strong>,</p>
 
-                <a href="${verificationLink}" style="padding: 12px 20px; background: black; color: white; border-radius: 5px; text-decoration: none;">
+                <a href="${verificationLink}" 
+                   style="padding: 12px 20px; background: black; color: white; 
+                          border-radius: 5px; text-decoration: none;">
                     Verify Email
                 </a>
 
@@ -40,8 +43,8 @@ const sendVerificationEmail = async (email, name) => {
     };
 
     try {
-        await brevo.sendTransacEmail(emailData);
-        console.log(`✅ Verification email sent to ${email}`);
+        const result = await brevo.sendTransacEmail(emailData);
+        console.log("✅ Verification email sent:", result.messageId);
     } catch (error) {
         console.error("❌ Email API failed:", error.response?.body || error);
     }
