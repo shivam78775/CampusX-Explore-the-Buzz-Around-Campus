@@ -20,8 +20,8 @@ const sendVerificationEmail = async (email, name) => {
 
     const emailData = {
         sender: { 
-            name: process.env.SENDER_NAME, 
-            email: process.env.SENDER_EMAIL   // MUST BE VERIFIED IN BREVO
+            name: "CampusX", 
+            email: process.env.GMAIL_USER    // <-- FIXED
         },
         to: [{ email }],
         subject: "Verify Your Email | CampusX",
@@ -30,9 +30,7 @@ const sendVerificationEmail = async (email, name) => {
                 <h2>Verify Your Email Address</h2>
                 <p>Hello <strong>${name}</strong>,</p>
 
-                <a href="${verificationLink}" 
-                   style="padding: 12px 20px; background: black; color: white; 
-                          border-radius: 5px; text-decoration: none;">
+                <a href="${verificationLink}" style="padding: 12px 20px; background: black; color: white; border-radius: 5px; text-decoration: none;">
                     Verify Email
                 </a>
 
@@ -43,8 +41,8 @@ const sendVerificationEmail = async (email, name) => {
     };
 
     try {
-        const result = await brevo.sendTransacEmail(emailData);
-        console.log("✅ Verification email sent:", result.messageId);
+        await brevo.sendTransacEmail(emailData);
+        console.log(`✅ Verification email sent to ${email}`);
     } catch (error) {
         console.error("❌ Email API failed:", error.response?.body || error);
     }
