@@ -19,9 +19,9 @@ const sendVerificationEmail = async (email, name) => {
     const verificationLink = `${process.env.BASE_URL}/verify-email?token=${token}`;
 
     const emailData = {
-        sender: { 
-            name: "CampusX", 
-            email: process.env.GMAIL_USER    // <-- FIXED
+        sender: {
+            name: "CampusX",
+            email: "campusx@campusx.karanportfolio.xyz" // ✔ Updated sender email
         },
         to: [{ email }],
         subject: "Verify Your Email | CampusX",
