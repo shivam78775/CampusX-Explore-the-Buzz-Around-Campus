@@ -21,7 +21,7 @@ const sendVerificationEmail = async (email, name) => {
     const emailData = {
         sender: {
             name: "CampusX",
-            email: "campusx@campusx.karanprotfolio.xyz" // ✔ Updated sender email
+            email: "campusx@karanportfolio.xyz" // ✔ Updated sender email
         },
         to: [{ email }],
         subject: "Verify Your Email | CampusX",
