@@ -52,6 +52,6 @@ app.set("io", io);
 // 🚀 Start Server
 startServer().then(() => {
   server.listen(PORT, () => {
-    console.log(`🚀 Server running at http://localhost:${PORT}`);
+    console.log(`CampusX 🚀 Server running at http://localhost:${PORT} `);
   });
 });
