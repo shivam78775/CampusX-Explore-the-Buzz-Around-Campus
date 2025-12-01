@@ -42,7 +42,7 @@ const sendVerificationEmail = async (email, name) => {
 
     try {
         await brevo.sendTransacEmail(emailData);
-        console.log(`✅ Verification email sent to ${email}`);
+        console.log(`✅ Verification email sent to ${email} by CampusX`);
         console.log("SENDER USED:", process.env.SENDER_EMAIL);
     } catch (error) {
         console.error("❌ Email API failed:", error.response?.body || error);
