@@ -16,7 +16,7 @@ const brevo = new Brevo.TransactionalEmailsApi();
 // ================================
 const sendVerificationEmail = async (email, name) => {
     const token = verificationToken(email);
-    const verificationLink = `${process.env.BACK_URL}/verify-email?token=${token}`;
+    const verificationLink = `${process.env.BACK_URL}/api/v1/auth/verify-email?token=${token}`;
 
     const emailData = {
         sender: {

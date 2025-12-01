@@ -5,4 +5,6 @@ const authRouter = express.Router();
 
 authRouter.post("/verify-token", verifyTokenForEmail);
 
+authRouter.get("/verify-email", verifyTokenForEmail);
+
 module.exports = authRouter;

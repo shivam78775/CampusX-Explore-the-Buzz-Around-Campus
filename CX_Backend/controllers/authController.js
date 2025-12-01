@@ -3,9 +3,16 @@ const Users = require("../models/userModel.js"); // Ensure correct path
 require("dotenv").config();
 
 async function verifyTokenForEmail(req, res) {
-    const { token } = req.body;
+    const token = req.body.token || req.query.token;
+
+    // 👉 FIX: Check if token exists
+    if (!token) {
+        return res.status(400).send("❌ Token is missing");
+    }
+
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
         const user = await Users.findOneAndUpdate(
             { email: decoded.email },
             { isEmailVerified: true },
@@ -13,15 +20,16 @@ async function verifyTokenForEmail(req, res) {
         );
 
         if (!user) {
-            return res.status(404).json({ message: "User Not Found" });
+            return res.status(404).send("❌ User Not Found");
         }
-        
-        return res.status(200).json({ message: "User Verified Successfully" });
+
+        return res.send("✅ Email Verified Successfully!");
 
     } catch (error) {
         console.error("Error verifying token:", error);
-        return res.status(500).json({ message: "Invalid or expired token" });
+        return res.status(400).send("❌ Invalid or Expired Token");
     }
 }
+
 
 module.exports = { verifyTokenForEmail }; 
