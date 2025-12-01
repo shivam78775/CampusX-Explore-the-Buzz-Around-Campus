@@ -20,8 +20,8 @@ const sendVerificationEmail = async (email, name) => {
 
     const emailData = {
         sender: {
-            name: "CampusX",
-            email: "campusx@karanportfolio.xyz" // ✔ Updated sender email
+            name: process.env.SENDER_NAME,
+            email: process.env.SENDER_EMAIL
         },
         to: [{ email }],
         subject: "Verify Your Email | CampusX",
@@ -43,6 +43,7 @@ const sendVerificationEmail = async (email, name) => {
     try {
         await brevo.sendTransacEmail(emailData);
         console.log(`✅ Verification email sent to ${email}`);
+        console.log("SENDER USED:", process.env.SENDER_EMAIL);
     } catch (error) {
         console.error("❌ Email API failed:", error.response?.body || error);
     }
